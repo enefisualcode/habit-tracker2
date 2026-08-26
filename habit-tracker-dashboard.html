@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Habit Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FFFDF7;
+    --ink:#1B1B1F;
+    --ink-soft:#5B5B63;
+    --line:#232227;
+    --yellow:#FFD447;
+    --green:#3FA34D;
+    --coral:#FF6B4A;
+    --grey-bg:#F1EFE6;
+    --card-shadow: 4px 5px 0 var(--line);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(0,0,0,0.045) 1px, transparent 0);
+    background-size: 22px 22px;
+    color:var(--ink);
+    font-family:'Space Grotesk', sans-serif;
+    padding:28px 18px 60px;
+    min-height:100vh;
+  }
+  .wrap{max-width:640px;margin:0 auto;}
+
+  h1.title{
+    font-family:'Kalam', cursive;
+    font-weight:700;
+    font-size:34px;
+    text-align:center;
+    margin:0 0 2px;
+    letter-spacing:0.5px;
+  }
+  .subtitle{
+    text-align:center;
+    font-size:13px;
+    color:var(--ink-soft);
+    margin:0 0 26px;
+  }
+
+  .section-label{
+    font-family:'Kalam', cursive;
+    font-weight:700;
+    font-size:20px;
+    margin:30px 2px 12px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .section-label .badge{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:11px;
+    font-weight:600;
+    background:var(--ink);
+    color:var(--paper);
+    border-radius:20px;
+    padding:2px 9px;
+  }
+
+  /* hand-drawn card */
+  .card{
+    background:var(--paper);
+    border:3px solid var(--line);
+    box-shadow:var(--card-shadow);
+    padding:16px 18px;
+  }
+  .card.r1{border-radius:255px 15px 225px 15px/15px 225px 15px 255px; transform:rotate(-0.6deg);}
+  .card.r2{border-radius:15px 225px 15px 255px/225px 15px 255px 15px; transform:rotate(0.5deg);}
+  .card.r3{border-radius:225px 15px 255px 15px/15px 255px 15px 225px; transform:rotate(-0.3deg);}
+  .card.r4{border-radius:15px 255px 15px 225px/255px 15px 225px 15px; transform:rotate(0.8deg);}
+
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+
+  .stat-label{
+    font-family:'Kalam',cursive;
+    font-weight:700;
+    font-size:15px;
+    margin:0 0 6px;
+  }
+  .stat-value{
+    font-size:38px;
+    font-weight:700;
+    line-height:1;
+    letter-spacing:-1px;
+  }
+  .stat-value.small{font-size:30px;}
+  .stat-delta{
+    margin-top:6px;
+    font-size:12.5px;
+    font-weight:600;
+    display:inline-block;
+    padding:2px 8px;
+    border-radius:20px;
+  }
+  .stat-delta.up{background:#E4F5E6;color:var(--green);}
+  .stat-delta.down{background:#FFE9E3;color:var(--coral);}
+  .stat-delta.flat{background:var(--grey-bg);color:var(--ink-soft);}
+
+  .chart-card{padding:18px 14px 10px;}
+  .chart-card .stat-label{margin-bottom:10px;}
+  #chartSvg{width:100%;height:auto;display:block;}
+
+  .habit-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px;}
+  .habit-row{
+    display:flex;align-items:center;justify-content:space-between;
+    background:var(--paper);
+    border:2.5px solid var(--line);
+    border-radius:14px;
+    padding:10px 14px;
+  }
+  .habit-left{display:flex;align-items:center;gap:10px;min-width:0;}
+  .check{
+    width:22px;height:22px;border-radius:6px;border:2.5px solid var(--line);
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+    font-size:14px;font-weight:700;
+  }
+  .check.done{background:var(--green);border-color:var(--green);color:white;}
+  .habit-name{font-size:14px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .streak{
+    font-size:12px;font-weight:700;color:var(--ink);
+    background:var(--yellow);border:2px solid var(--line);
+    border-radius:20px;padding:2px 9px;white-space:nowrap;flex-shrink:0;
+  }
+  .streak.zero{background:var(--grey-bg);color:var(--ink-soft);}
+
+  .foot-note{
+    text-align:center;font-size:11.5px;color:var(--ink-soft);
+    margin-top:34px;
+  }
+
+  /* setup / loading / error states */
+  .state-box{
+    border:3px dashed var(--line);
+    border-radius:20px;
+    padding:22px;
+    text-align:center;
+    font-size:14px;
+    color:var(--ink-soft);
+  }
+  .state-box.error{border-color:var(--coral);color:var(--coral);}
+  .state-box h2{
+    font-family:'Kalam',cursive;font-size:20px;color:var(--ink);margin:0 0 10px;
+  }
+  .state-box code{
+    background:var(--grey-bg);padding:1px 6px;border-radius:5px;font-size:12.5px;
+  }
+  .state-box ol{text-align:left;font-size:13px;line-height:1.6;padding-left:20px;}
+  .setup-form{display:flex;flex-direction:column;gap:10px;margin-top:14px;text-align:left;}
+  .setup-form label{font-size:12px;font-weight:600;color:var(--ink);}
+  .setup-form input{
+    font-family:'Space Grotesk',sans-serif;
+    padding:9px 10px;border:2px solid var(--line);border-radius:8px;font-size:13px;
+  }
+  .setup-form button{
+    font-family:'Kalam',cursive;font-weight:700;font-size:15px;
+    background:var(--ink);color:var(--paper);border:none;border-radius:10px;
+    padding:10px;cursor:pointer;margin-top:4px;
+  }
+  .setup-form button:hover{background:var(--coral);}
+
+  @media (prefers-reduced-motion:no-preference){
+    .card{transition:transform .15s ease;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1 class="title">🔥 Habit Tracker</h1>
+  <p class="subtitle" id="periodLabel">memuat...</p>
+
+  <div id="app">
+    <div class="state-box" id="loadingBox">Menghubungkan ke Google Sheets…</div>
+  </div>
+
+  <p class="foot-note">Data live dari Google Sheets · dibuat manual dengan ✏️</p>
+</div>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" result="noise" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="4"/>
+    </filter>
+  </defs>
+</svg>
+
+<script>
+/* ============ CONFIG ============
+   Isi 3 nilai ini supaya dashboard bisa live-sync ke Google Sheets kamu.
+
+   1) SHEET_ID  -> ambil dari URL sheet:
+      docs.google.com/spreadsheets/d/  >>> INI <<<  /edit
+   2) SHEET_TAB -> nama tab yang datanya mau ditampilkan (default "Habit Tracker")
+   3) API_KEY   -> API key dari Google Cloud Console (Sheets API v4)
+
+   Cara siapin (5 menit):
+   a. Buka sheet kamu -> tombol "Share" -> ubah ke
+      "Anyone with the link" -> role "Viewer" (read-only, wajib biar API key bisa baca)
+   b. Buka console.cloud.google.com -> buat project baru (atau pakai yang ada)
+   c. Enable "Google Sheets API" di API Library
+   d. Buka "Credentials" -> Create Credentials -> API key
+   e. (disarankan) Restrict key itu supaya cuma bisa dipakai untuk Sheets API,
+      dan batasi "Website restrictions" ke domain tempat file ini di-hosting
+      (misal GitHub Pages kamu), biar key gak disalahgunakan orang lain.
+   f. Paste SHEET_ID + API key di form yang muncul saat pertama buka halaman ini
+      (tersimpan di memori browser session ini saja, tidak ditulis ulang ke file).
+================================== */
+const CONFIG = {
+  SHEET_ID: "",
+  SHEET_TAB: "Habit Tracker",
+  API_KEY: ""
+};
+
+const RANGE = "A1:AL30";
+
+const els = {
+  app: document.getElementById('app'),
+  period: document.getElementById('periodLabel'),
+};
+
+function sheetsUrl(){
+  const range = encodeURIComponent(`${CONFIG.SHEET_TAB}!${RANGE}`);
+  return `https://sheets.googleapis.com/v4/spreadsheets/${CONFIG.SHEET_ID}/values/${range}?key=${CONFIG.API_KEY}`;
+}
+
+function showSetup(errorMsg){
+  els.period.textContent = "belum terhubung";
+  els.app.innerHTML = `
+    <div class="state-box ${errorMsg ? 'error' : ''}">
+      <h2>${errorMsg ? 'Gagal ambil data' : 'Sambungkan Google Sheets kamu'}</h2>
+      ${errorMsg ? `<p>${errorMsg}</p>` : ''}
+      <ol>
+        <li>Share sheet: <b>Anyone with the link → Viewer</b></li>
+        <li>Buat API key di Google Cloud Console (aktifkan Google Sheets API)</li>
+        <li>Isi Sheet ID + API key di bawah ini</li>
+      </ol>
+      <div class="setup-form">
+        <label>Sheet ID</label>
+        <input id="inSheetId" placeholder="1yzwJYc0SR2l6PMpVRiBkJ_XY9lPJj6HYwfKWhTmJOSU" value="${CONFIG.SHEET_ID}">
+        <label>Nama Tab</label>
+        <input id="inTab" placeholder="Habit Tracker" value="${CONFIG.SHEET_TAB}">
+        <label>API Key</label>
+        <input id="inKey" placeholder="AIza..." value="${CONFIG.API_KEY}">
+        <button id="btnConnect">Sambungkan</button>
+      </div>
+    </div>`;
+  document.getElementById('btnConnect').onclick = () => {
+    CONFIG.SHEET_ID = document.getElementById('inSheetId').value.trim();
+    CONFIG.SHEET_TAB = document.getElementById('inTab').value.trim() || "Habit Tracker";
+    CONFIG.API_KEY = document.getElementById('inKey').value.trim();
+    load();
+  };
+}
+
+async function load(){
+  if(!CONFIG.SHEET_ID || !CONFIG.API_KEY){ showSetup(); return; }
+  els.app.innerHTML = `<div class="state-box" id="loadingBox">Menghubungkan ke Google Sheets…</div>`;
+  try{
+    const res = await fetch(sheetsUrl());
+    if(!res.ok){
+      const body = await res.json().catch(()=>({}));
+      throw new Error(body?.error?.message || `HTTP ${res.status}`);
+    }
+    const data = await res.json();
+    const rows = data.values || [];
+    const parsed = parseSheet(rows);
+    render(parsed);
+  }catch(err){
+    showSetup(`${err.message}. Cek: sheet sudah public "Viewer", API key valid, nama tab benar.`);
+  }
+}
+
+function parseSheet(rows){
+  // find header row: first cell === "Nama Habit"
+  const headerIdx = rows.findIndex(r => (r[0]||'').trim() === 'Nama Habit');
+  if(headerIdx === -1) throw new Error('Format sheet tidak dikenali (header "Nama Habit" tidak ditemukan)');
+  const header = rows[headerIdx];
+
+  // day columns start at index 2, continue while numeric
+  let dayCols = [];
+  let c = 2;
+  while(c < header.length && /^\d+$/.test((header[c]||'').trim())){
+    dayCols.push({col:c, day:parseInt(header[c],10)});
+    c++;
+  }
+  const totalCol = c;      // "Total ✓"
+  const pctCol = c+1;      // "% Selesai"
+
+  // habit rows: from headerIdx+1 until row whose col A starts with "Total Habit"
+  const habits = [];
+  for(let r = headerIdx+1; r < rows.length; r++){
+    const name = (rows[r][0]||'').trim();
+    if(!name) continue;
+    if(name.toLowerCase().startsWith('total habit')) break;
+    const checks = dayCols.map(dc => {
+      const v = (rows[r][dc.col]||'').toString().trim().toUpperCase();
+      return v === 'TRUE' || v === '✓' || v === '1' || v === 'V';
+    });
+    const pctRaw = (rows[r][pctCol]||'0').toString().replace('%','').replace(',','.').trim();
+    const pct = parseFloat(pctRaw) || 0;
+    habits.push({name, checks, pct});
+  }
+
+  // daily % progress row (below "Total Habit Selesai" row)
+  const totalRowIdx = rows.findIndex(r => (r[0]||'').trim().toLowerCase().startsWith('total habit'));
+  const dailyPctRowIdx = rows.findIndex((r,i) => i>totalRowIdx && (r[0]||'').toLowerCase().includes('daily'));
+  const dailyPct = dayCols.map(dc => {
+    const raw = (rows[dailyPctRowIdx]?.[dc.col]||'0').toString().replace('%','').replace(',','.').trim();
+    return parseFloat(raw) || 0;
+  });
+
+  // figure out "today" index: last day column with any nonzero total-habit-selesai (i.e. actually reached)
+  const totalRow = rows[totalRowIdx] || [];
+  let lastActive = -1;
+  dayCols.forEach((dc,i) => {
+    const v = parseFloat((totalRow[dc.col]||'0').toString().replace(',','.')) || 0;
+    if(v > 0) lastActive = i;
+  });
+  if(lastActive === -1) lastActive = dayCols.length - 1;
+
+  const bulan = (rows[3]?.[1]||'').trim();
+  const tahun = (rows[3]?.[3]||'').trim();
+
+  return { dayCols, habits, dailyPct, lastActive, bulan, tahun };
+}
+
+function findHabit(habits, needle){
+  const h = habits.find(h => h.name.toLowerCase().includes(needle.toLowerCase()));
+  return h ? h.pct : null;
+}
+
+function streakFor(checks, uptoIdx){
+  let s = 0;
+  for(let i = uptoIdx; i >= 0; i--){
+    if(checks[i]) s++; else break;
+  }
+  return s;
+}
+
+function deltaBadge(today, yest){
+  const diff = today - yest;
+  if(Math.abs(diff) < 0.05) return `<span class="stat-delta flat">stabil</span>`;
+  const cls = diff > 0 ? 'up' : 'down';
+  const arrow = diff > 0 ? '▲' : '▼';
+  return `<span class="stat-delta ${cls}">${arrow} ${Math.abs(diff).toFixed(1)}%</span>`;
+}
+
+function buildChart(dailyPct, uptoIdx){
+  const w = 580, h = 160, pad = 10;
+  const vals = dailyPct.slice(0, uptoIdx+1);
+  if(vals.length < 2){
+    return `<div style="font-size:12px;color:var(--ink-soft);padding:20px;text-align:center;">Belum cukup data harian untuk grafik</div>`;
+  }
+  const max = Math.max(100, ...vals);
+  const stepX = (w - pad*2) / (vals.length - 1);
+  const pts = vals.map((v,i) => {
+    const x = pad + i*stepX;
+    const y = h - pad - (v/max)*(h - pad*2);
+    return [x,y];
+  });
+  const path = pts.map((p,i) => (i===0?'M':'L') + p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
+  const dots = pts.map((p,i) => i === pts.length-1
+    ? `<circle cx="${p[0]}" cy="${p[1]}" r="5" fill="var(--coral)" stroke="var(--line)" stroke-width="2"/>`
+    : '').join('');
+  return `<svg id="chartSvg" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">
+    <line x1="${pad}" y1="${h-pad}" x2="${w-pad}" y2="${h-pad}" stroke="var(--ink-soft)" stroke-width="1" stroke-dasharray="3 4"/>
+    <path d="${path}" fill="none" stroke="var(--line)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough)"/>
+    ${dots}
+  </svg>`;
+}
+
+function render(p){
+  const { dayCols, habits, dailyPct, lastActive, bulan, tahun } = p;
+  els.period.textContent = `Progress bulan ${bulan} ${tahun}`;
+
+  const selfControl = avg([findHabit(habits,'No PMO'), findHabit(habits,'Socmed')]);
+  const bodyStrength = avg([findHabit(habits,'Push Up'), findHabit(habits,'Plank')]);
+  const language = avg([findHabit(habits,'Duolingo Pagi'), findHabit(habits,'Duolingo Malam')]);
+
+  const today = dailyPct[lastActive] ?? 0;
+  const yest = lastActive > 0 ? dailyPct[lastActive-1] : today;
+
+  const habitRows = habits.map(h => {
+    const doneToday = h.checks[lastActive];
+    const streak = streakFor(h.checks, lastActive);
+    return `<li class="habit-row">
+      <div class="habit-left">
+        <div class="check ${doneToday?'done':''}">${doneToday?'✓':''}</div>
+        <span class="habit-name">${h.name}</span>
+      </div>
+      <span class="streak ${streak===0?'zero':''}">${streak>0 ? '🔥 '+streak+'h' : '—'}</span>
+    </li>`;
+  }).join('');
+
+  els.app.innerHTML = `
+    <div class="section-label">📈 Improvement</div>
+    <div class="row2">
+      <div class="card r1">
+        <p class="stat-label">Self Control</p>
+        <div class="stat-value">${fmt(selfControl)}%</div>
+      </div>
+      <div class="card r2">
+        <p class="stat-label">Body Strenght</p>
+        <div class="stat-value">${fmt(bodyStrength)}%</div>
+      </div>
+    </div>
+
+    <div class="section-label">📊 Grafik <span class="badge">${dayCols.length} hari</span></div>
+    <div class="card r3 chart-card">
+      <p class="stat-label">Daily % Progress</p>
+      ${buildChart(dailyPct, lastActive)}
+    </div>
+
+    <div class="section-label">⚡ Yesterday vs Today</div>
+    <div class="row2">
+      <div class="card r2">
+        <p class="stat-label">Yesterday</p>
+        <div class="stat-value small">${fmt(yest)}%</div>
+      </div>
+      <div class="card r1">
+        <p class="stat-label">Today</p>
+        <div class="stat-value small">${fmt(today)}%</div>
+        ${deltaBadge(today, yest)}
+      </div>
+    </div>
+
+    <div class="section-label">🗣️ Language</div>
+    <div class="card r4">
+      <p class="stat-label">Duolingo Pagi + Malam</p>
+      <div class="stat-value">${fmt(language)}%</div>
+    </div>
+
+    <div class="section-label">✅ Habit Check <span class="badge">hari ke-${dayCols[lastActive]?.day ?? '?'}</span></div>
+    <ul class="habit-list">${habitRows}</ul>
+  `;
+}
+
+function avg(arr){
+  const vals = arr.filter(v => v !== null && !isNaN(v));
+  if(!vals.length) return 0;
+  return vals.reduce((a,b)=>a+b,0) / vals.length;
+}
+function fmt(n){ return (Math.round(n*10)/10).toString(); }
+
+load();
+</script>
+</body>
+</html>
