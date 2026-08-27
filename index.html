@@ -9,104 +9,118 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Habit Tracker">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --paper:#FFFDF7;
-    --ink:#1B1B1F;
-    --ink-soft:#5B5B63;
-    --line:#232227;
-    --yellow:#FFD447;
-    --green:#3FA34D;
-    --coral:#FF6B4A;
-    --grey-bg:#F1EFE6;
-    --card-shadow: 4px 5px 0 var(--line);
+    --paper:#FFF9EC;
+    --ink:#171717;
+    --ink-soft:#6B6B6B;
+    --line:#171717;
+    --yellow:#FFC93C;
+    --green:#8FE07B;
+    --pink:#FF7FAE;
+    --purple:#A48CFF;
+    --blue:#7FD1E0;
+    --coral:#FF5C5C;
+    --grey-bg:#F0EEE6;
+    --shadow-off: 5px 5px 0 var(--line);
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
     background:var(--paper);
-    background-image:
-      radial-gradient(circle at 1px 1px, rgba(0,0,0,0.045) 1px, transparent 0);
-    background-size: 22px 22px;
     color:var(--ink);
     font-family:'Space Grotesk', sans-serif;
-    padding:28px 18px 60px;
+    padding:24px 16px 60px;
     min-height:100vh;
   }
   .wrap{max-width:640px;margin:0 auto;}
 
   h1.title{
-    font-family:'Kalam', cursive;
     font-weight:700;
-    font-size:34px;
+    font-size:30px;
     text-align:center;
     margin:0 0 2px;
-    letter-spacing:0.5px;
+    letter-spacing:-0.5px;
   }
   .subtitle{
     text-align:center;
     font-size:13px;
+    font-weight:500;
     color:var(--ink-soft);
     margin:0 0 26px;
   }
 
   .section-label{
-    font-family:'Kalam', cursive;
     font-weight:700;
-    font-size:20px;
-    margin:30px 2px 12px;
+    font-size:19px;
+    margin:28px 2px 12px;
     display:flex;
     align-items:center;
-    gap:8px;
+    gap:10px;
+    letter-spacing:-0.3px;
   }
   .section-label .badge{
-    font-family:'Space Grotesk',sans-serif;
     font-size:11px;
-    font-weight:600;
+    font-weight:700;
     background:var(--ink);
     color:var(--paper);
     border-radius:20px;
-    padding:2px 9px;
+    padding:3px 10px;
+    margin-left:auto;
   }
+  .icon-badge{
+    width:30px;height:30px;
+    border-radius:9px;
+    border:2.5px solid var(--line);
+    background:var(--yellow);
+    display:flex;align-items:center;justify-content:center;
+    font-size:15px;
+    box-shadow:2.5px 2.5px 0 var(--line);
+    flex-shrink:0;
+  }
+  .icon-badge.c-yellow{background:var(--yellow);}
+  .icon-badge.c-green{background:var(--green);}
+  .icon-badge.c-pink{background:var(--pink);}
+  .icon-badge.c-purple{background:var(--purple);}
+  .icon-badge.c-blue{background:var(--blue);}
 
-  /* hand-drawn card */
   .card{
-    background:var(--paper);
-    border:3px solid var(--line);
-    box-shadow:var(--card-shadow);
+    background:#FFFFFF;
+    border:2.5px solid var(--line);
+    border-radius:18px;
+    box-shadow:var(--shadow-off);
     padding:16px 18px;
   }
-  .card.r1{border-radius:255px 15px 225px 15px/15px 225px 15px 255px; transform:rotate(-0.6deg);}
-  .card.r2{border-radius:15px 225px 15px 255px/225px 15px 255px 15px; transform:rotate(0.5deg);}
-  .card.r3{border-radius:225px 15px 255px 15px/15px 255px 15px 225px; transform:rotate(-0.3deg);}
-  .card.r4{border-radius:15px 255px 15px 225px/255px 15px 225px 15px; transform:rotate(0.8deg);}
 
   .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
 
   .stat-label{
-    font-family:'Kalam',cursive;
-    font-weight:700;
-    font-size:15px;
+    font-weight:600;
+    font-size:13px;
+    color:var(--ink-soft);
     margin:0 0 6px;
+    text-transform:uppercase;
+    letter-spacing:0.3px;
   }
   .stat-value{
-    font-size:38px;
+    font-size:36px;
     font-weight:700;
     line-height:1;
     letter-spacing:-1px;
   }
-  .stat-value.small{font-size:30px;}
+  .stat-value.small{font-size:28px;}
   .stat-delta{
-    margin-top:6px;
-    font-size:12.5px;
-    font-weight:600;
+    margin-top:8px;
+    font-size:12px;
+    font-weight:700;
     display:inline-block;
-    padding:2px 8px;
+    padding:3px 9px;
     border-radius:20px;
+    border:2px solid var(--line);
   }
-  .stat-delta.up{background:#E4F5E6;color:var(--green);}
-  .stat-delta.down{background:#FFE9E3;color:var(--coral);}
+  .stat-delta.up{background:var(--green);color:var(--ink);}
+  .stat-delta.down{background:var(--coral);color:var(--ink);}
   .stat-delta.flat{background:var(--grey-bg);color:var(--ink-soft);}
 
   .chart-card{padding:18px 14px 10px;}
@@ -115,70 +129,76 @@
 
   .habit-list{
     list-style:none;margin:0;padding:0;
-    display:grid;grid-template-columns:1fr 1fr;gap:9px;
+    display:grid;grid-template-columns:1fr 1fr;gap:12px;
   }
   .habit-row{
-    display:flex;flex-direction:column;align-items:flex-start;gap:8px;
-    background:var(--paper);
+    display:flex;flex-direction:column;align-items:flex-start;gap:10px;
+    background:#FFFFFF;
     border:2.5px solid var(--line);
-    border-radius:14px;
-    padding:10px 12px;
+    border-radius:16px;
+    box-shadow:3px 3px 0 var(--line);
+    padding:12px 13px;
     min-width:0;
   }
-  .habit-left{display:flex;align-items:center;gap:8px;min-width:0;width:100%;}
-  .check{
-    width:22px;height:22px;border-radius:6px;border:2.5px solid var(--line);
-    display:flex;align-items:center;justify-content:center;flex-shrink:0;
-    font-size:14px;font-weight:700;
+  .habit-icon{
+    width:34px;height:34px;
+    border-radius:9px;
+    border:2.5px solid var(--line);
+    display:flex;align-items:center;justify-content:center;
+    font-size:16px;font-weight:700;color:var(--ink);
   }
-  .check.done{background:var(--green);border-color:var(--green);color:white;}
-  .habit-name{font-size:13px;font-weight:500;line-height:1.25;word-break:break-word;}
+  .habit-icon.c-yellow{background:var(--yellow);}
+  .habit-icon.c-green{background:var(--green);}
+  .habit-icon.c-pink{background:var(--pink);}
+  .habit-icon.c-purple{background:var(--purple);}
+  .habit-icon.c-blue{background:var(--blue);}
+  .habit-name{font-size:13px;font-weight:600;line-height:1.25;word-break:break-word;}
   .streak{
     font-size:11.5px;font-weight:700;color:var(--ink);
-    background:var(--yellow);border:2px solid var(--line);
+    background:var(--grey-bg);border:2px solid var(--line);
     border-radius:20px;padding:2px 9px;white-space:nowrap;flex-shrink:0;
     align-self:flex-start;
   }
   .streak.zero{background:var(--grey-bg);color:var(--ink-soft);}
+  .streak:not(.zero){background:var(--yellow);}
 
   .foot-note{
-    text-align:center;font-size:11.5px;color:var(--ink-soft);
+    text-align:center;font-size:11.5px;font-weight:500;color:var(--ink-soft);
     margin-top:34px;
   }
 
-  /* setup / loading / error states */
   .state-box{
-    border:3px dashed var(--line);
+    border:2.5px solid var(--line);
     border-radius:20px;
+    box-shadow:var(--shadow-off);
+    background:#FFFFFF;
     padding:22px;
     text-align:center;
     font-size:14px;
     color:var(--ink-soft);
+    font-weight:500;
   }
-  .state-box.error{border-color:var(--coral);color:var(--coral);}
+  .state-box.error{border-color:var(--coral);}
   .state-box h2{
-    font-family:'Kalam',cursive;font-size:20px;color:var(--ink);margin:0 0 10px;
+    font-size:19px;color:var(--ink);margin:0 0 10px;font-weight:700;
   }
   .state-box code{
     background:var(--grey-bg);padding:1px 6px;border-radius:5px;font-size:12.5px;
   }
-  .state-box ol{text-align:left;font-size:13px;line-height:1.6;padding-left:20px;}
+  .state-box ol{text-align:left;font-size:13px;line-height:1.6;padding-left:20px;font-weight:500;}
   .setup-form{display:flex;flex-direction:column;gap:10px;margin-top:14px;text-align:left;}
-  .setup-form label{font-size:12px;font-weight:600;color:var(--ink);}
+  .setup-form label{font-size:12px;font-weight:700;color:var(--ink);}
   .setup-form input{
     font-family:'Space Grotesk',sans-serif;
-    padding:9px 10px;border:2px solid var(--line);border-radius:8px;font-size:13px;
+    padding:10px 12px;border:2.5px solid var(--line);border-radius:10px;font-size:13px;
   }
   .setup-form button{
-    font-family:'Kalam',cursive;font-weight:700;font-size:15px;
-    background:var(--ink);color:var(--paper);border:none;border-radius:10px;
-    padding:10px;cursor:pointer;margin-top:4px;
+    font-weight:700;font-size:15px;
+    background:var(--yellow);color:var(--ink);border:2.5px solid var(--line);border-radius:12px;
+    box-shadow:3px 3px 0 var(--line);
+    padding:10px;cursor:pointer;margin-top:6px;
   }
-  .setup-form button:hover{background:var(--coral);}
-
-  @media (prefers-reduced-motion:no-preference){
-    .card{transition:transform .15s ease;}
-  }
+  .setup-form button:hover{background:var(--green);}
 </style>
 </head>
 <body>
@@ -193,15 +213,7 @@
   <p class="foot-note">Data live dari Google Sheets · dibuat manual dengan ✏️</p>
 </div>
 
-<svg width="0" height="0" style="position:absolute">
-  <defs>
-    <filter id="rough">
-      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" result="noise" seed="7"/>
-      <feDisplacementMap in="SourceGraphic" in2="noise" scale="4"/>
-    </filter>
-  </defs>
-</svg>
-
+<script>
 <script>
 /* ============ CONFIG ============
    Isi 3 nilai ini supaya dashboard bisa live-sync ke Google Sheets kamu.
@@ -408,7 +420,7 @@ function buildChart(dailyPct, uptoIdx){
     : '').join('');
   return `<svg id="chartSvg" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">
     <line x1="${pad}" y1="${h-pad}" x2="${w-pad}" y2="${h-pad}" stroke="var(--ink-soft)" stroke-width="1" stroke-dasharray="3 4"/>
-    <path d="${path}" fill="none" stroke="var(--line)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough)"/>
+    <path d="${path}" fill="none" stroke="var(--line)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
     ${dots}
   </svg>`;
 }
@@ -424,57 +436,56 @@ function render(p){
   const today = dailyPct[lastActive] ?? 0;
   const yest = lastActive > 0 ? dailyPct[lastActive-1] : today;
 
-  const habitRows = habits.map(h => {
+  const habitRows = habits.map((h,i) => {
     const doneToday = h.checks[lastActive];
     const streak = streakFor(h.checks, lastActive);
+    const colors = ['c-yellow','c-green','c-pink','c-purple','c-blue'];
     return `<li class="habit-row">
-      <div class="habit-left">
-        <div class="check ${doneToday?'done':''}">${doneToday?'✓':''}</div>
-        <span class="habit-name">${h.name}</span>
-      </div>
+      <div class="habit-icon ${colors[i%colors.length]}">${doneToday?'✓':''}</div>
+      <span class="habit-name">${h.name}</span>
       <span class="streak ${streak===0?'zero':''}">${streak>0 ? '🔥 '+streak+'h' : '—'}</span>
     </li>`;
   }).join('');
 
   els.app.innerHTML = `
-    <div class="section-label">📈 Improvement</div>
+    <div class="section-label"><span class="icon-badge c-yellow">📈</span>Improvement</div>
     <div class="row2">
-      <div class="card r1">
+      <div class="card">
         <p class="stat-label">Self Control</p>
         <div class="stat-value">${fmt(selfControl)}%</div>
       </div>
-      <div class="card r2">
+      <div class="card">
         <p class="stat-label">Body Strenght</p>
         <div class="stat-value">${fmt(bodyStrength)}%</div>
       </div>
     </div>
 
-    <div class="section-label">📊 Grafik <span class="badge">${dayCols.length} hari</span></div>
-    <div class="card r3 chart-card">
+    <div class="section-label"><span class="icon-badge c-green">📊</span>Grafik <span class="badge">${dayCols.length} hari</span></div>
+    <div class="card chart-card">
       <p class="stat-label">Daily % Progress</p>
       ${buildChart(dailyPct, lastActive)}
     </div>
 
-    <div class="section-label">⚡ Yesterday vs Today</div>
+    <div class="section-label"><span class="icon-badge c-pink">⚡</span>Yesterday vs Today</div>
     <div class="row2">
-      <div class="card r2">
+      <div class="card">
         <p class="stat-label">Yesterday</p>
         <div class="stat-value small">${fmt(yest)}%</div>
       </div>
-      <div class="card r1">
+      <div class="card">
         <p class="stat-label">Today</p>
         <div class="stat-value small">${fmt(today)}%</div>
         ${deltaBadge(today, yest)}
       </div>
     </div>
 
-    <div class="section-label">🗣️ Language</div>
-    <div class="card r4">
+    <div class="section-label"><span class="icon-badge c-purple">🗣️</span>Language</div>
+    <div class="card">
       <p class="stat-label">Duolingo Pagi + Malam</p>
       <div class="stat-value">${fmt(language)}%</div>
     </div>
 
-    <div class="section-label">✅ Habit Check <span class="badge">hari ke-${dayCols[lastActive]?.day ?? '?'}</span></div>
+    <div class="section-label"><span class="icon-badge c-blue">✅</span>Habit Check <span class="badge">hari ke-${dayCols[lastActive]?.day ?? '?'}</span></div>
     <ul class="habit-list">${habitRows}</ul>
   `;
   addResetLink();
