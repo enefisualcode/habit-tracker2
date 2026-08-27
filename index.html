@@ -282,10 +282,36 @@ async function load(){
     const data = await res.json();
     const rows = data.values || [];
     const parsed = parseSheet(rows);
+    saveConfig();
     render(parsed);
   }catch(err){
     showSetup(`${err.message}. Cek: sheet sudah public "Viewer", API key valid, nama tab benar.`);
   }
+}
+
+const STORAGE_KEY = 'habitTrackerConfig';
+function saveConfig(){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(CONFIG)); }catch(e){}
+}
+function loadStoredConfig(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return;
+    const saved = JSON.parse(raw);
+    Object.assign(CONFIG, saved);
+  }catch(e){}
+}
+function addResetLink(){
+  const btn = document.createElement('div');
+  btn.style.cssText = 'text-align:center;margin-top:16px;';
+  btn.innerHTML = `<a href="#" id="resetLink" style="font-size:11.5px;color:var(--ink-soft);text-decoration:underline;">ganti sheet / akun</a>`;
+  els.app.appendChild(btn);
+  document.getElementById('resetLink').onclick = (e) => {
+    e.preventDefault();
+    localStorage.removeItem(STORAGE_KEY);
+    CONFIG.SHEET_ID = ''; CONFIG.API_KEY = '';
+    showSetup();
+  };
 }
 
 function parseSheet(rows){
@@ -451,6 +477,7 @@ function render(p){
     <div class="section-label">✅ Habit Check <span class="badge">hari ke-${dayCols[lastActive]?.day ?? '?'}</span></div>
     <ul class="habit-list">${habitRows}</ul>
   `;
+  addResetLink();
 }
 
 function avg(arr){
@@ -460,6 +487,7 @@ function avg(arr){
 }
 function fmt(n){ return (Math.round(n*10)/10).toString(); }
 
+loadStoredConfig();
 load();
 </script>
 </body>
